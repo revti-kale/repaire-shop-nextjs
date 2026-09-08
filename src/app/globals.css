@@ -121,10 +121,37 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   html {
     @apply font-sans;
+  }
+
+  @theme {
+    --background-image-home: url("/images/repair-shop-bg.jpg");
+     --animate-appear: appear 1s ease-in-out;
+  }
+
+  @keyframes appear {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide {
+    from {
+      transform: translateX(100%);
+    }
+
+    to {
+      transform: translateX(0%);
+    }
   }
 }
