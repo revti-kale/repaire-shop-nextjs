@@ -1,5 +1,6 @@
 import BackButton from "@/components/BackButton";
 import { getCustomers } from "@/lib/queries/getCustomers";
+import CustomerForm from "./CustomerForm";
 
 export default async function CustomersFormPage({ searchParams }: {
     searchParams: Promise<{ [key: string]: string | undefined }>
@@ -20,9 +21,11 @@ export default async function CustomersFormPage({ searchParams }: {
             }
 
             // Render the form with the customer data
+            return <CustomerForm customer={customer}/>
             
         } else {
             // Render the form for creating a new customer
+          return  <CustomerForm/>
         }
 
     } catch (error) {

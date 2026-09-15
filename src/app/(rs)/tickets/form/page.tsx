@@ -1,31 +1,19 @@
 import BackButton from "@/components/BackButton";
 import { getCustomers } from "@/lib/queries/getCustomers";
 import { getTickets } from "@/lib/queries/getTickets";
+import TicketForm from "./TicketForm";
 
-export default async function TicketsFormPage({ searchParams }:
-    { searchParams: Promise<{ [key: string]: string | undefined }> }) {
+export default async function TicketsFormPage({
+    searchParams,
+}: {
+    searchParams: Promise<{ [key: string]: string | undefined }>;
+}) {
     try {
         const { customerId, ticketId } = await searchParams;
 
-        if (customerId) {
-            const tickets = await getTickets(Number(customerId));
-
-            if (!tickets && !customerId) {
-                return (
-                    <div>
-                        <h1>Ticket {ticketId} not found</h1>
-                        <BackButton title="Go Back" variant="default" />
-                    </div>
-                );
-            }
-
-            // Render the form with the customer data
-
-        } else {
-            // Render the form for creating a new customer
-        }
-
-        // new ticket form
+        // --------------------------------
+        // Create new ticket for a customer
+        // --------------------------------
         if (customerId) {
             const customer = await getCustomers(Number(customerId));
 
@@ -46,34 +34,58 @@ export default async function TicketsFormPage({ searchParams }:
                     </div>
                 );
             }
+
             console.log("customer", customer);
+
+            return <TicketForm customer={customer} />;
         }
-        // Edit ticket form
-        const ticket = ticketId ? await getTickets(Number(ticketId)) : null;
 
-        if(!ticket){
-            return (
-                <div>
-                    <h1>Ticket {ticketId} not found</h1>
-                    <BackButton title="Go Back" variant="default" />
-                </div>
-            );
+        // --------------------------------
+        // Edit existing ticket
+        // --------------------------------
+        if (ticketId) {
+            const ticket = await getTickets(Number(ticketId));
+
+            if (!ticket) {
+                return (
+                    <div>
+                        <h1>Ticket {ticketId} not found</h1>
+                        <BackButton title="Go Back" variant="default" />
+                    </div>
+                );
+            }
+
+            const customer = await getCustomers(Number(ticket.customerId));
+
+            if (!customer) {
+                return (
+                    <div>
+                        <h1>Customer {ticket.customerId} not found</h1>
+                        <BackButton title="Go Back" variant="default" />
+                    </div>
+                );
+            }
+
+            return <TicketForm customer={customer} ticket={ticket} />;
         }
-        const customer = ticket ? await getCustomers(Number(ticket.customerId)) : null;
-        // return the ticket form
 
-        console.log("ticket", ticket);
-        console.log("customer", customer);
-
-
+        // --------------------------------
+        // No customerId or ticketId
+        // --------------------------------
+        return (
+            <div>
+                <h1>Invalid ticket request</h1>
+                <BackButton title="Go Back" variant="default" />
+            </div>
+        );
     } catch (error) {
-        console.error("Error fetching search params:", error);
-    }
+        console.error("Error fetching ticket form data:", error);
 
-    return (
-        <div>
-            <h1>Customer Form</h1>
-            <BackButton title="Go Back" variant="default" />
-        </div>
-    );
+        return (
+            <div>
+                <h1>Something went wrong</h1>
+                <BackButton title="Go Back" variant="default" />
+            </div>
+        );
+    }
 }
