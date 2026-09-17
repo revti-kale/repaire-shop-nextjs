@@ -14,7 +14,7 @@ export function InputWithLabel({
     nameInSchema,
     className,
     ...props
-}: Props) {
+}: Props){
     const { control } = useFormContext();
 
     const { field, fieldState } = useController({
@@ -30,7 +30,7 @@ export function InputWithLabel({
 
             <Input
                 id={nameInSchema}
-                className={`w-full max-w-xs ${className ?? ""}`}
+                className={`w-full max-w-xs disabled:text-blue-500 dark:disabled:text-green-500 disabled:opacity-75 ${className}`}
                 {...props}
                 {...field}
             />

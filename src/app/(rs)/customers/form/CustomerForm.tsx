@@ -68,7 +68,7 @@ export default function CustomerForm({ customer }: props) {
                         <TextareaWithLabel className="h-40" fieldTitle="Notes" nameInSchema="notes" />
 
                         <div className="flex gap-2">
-                            <Button type="submit" variant={"default"} title="save" className={'w-3/4'}>Submit</Button>
+                            <Button type="submit" variant={"default"} title="save" className={'w-3/4'}>Save</Button>
                             <Button type="button" variant={"destructive"} title="save"
                                 onClick={() => form.reset(defaultValues)}>Reset</Button>
 
