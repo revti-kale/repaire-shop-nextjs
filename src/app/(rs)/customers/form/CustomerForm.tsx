@@ -1,7 +1,12 @@
 "use client"
 import { insertCustomerSchema, selectCustomerSchemaType, type insertCustomerSchemaType } from "@/zod-schema/customer"
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { InputWithLabel } from "@/components/input/InputWithLabels";
+import { Button } from "@/components/ui/button";
+import { TextareaWithLabel } from "@/components/input/TextareaWithLabels";
+import { SelectWithLabel } from "@/components/input/SelectWithLabel";
+import { StateArray } from "@/constants/StateArray";
 
 type props = {
     customer?: selectCustomerSchemaType
@@ -39,9 +44,40 @@ export default function CustomerForm({ customer }: props) {
                     {customer?.id ? "Edit" : "New"} Customer Form
                 </h2>
             </div>
-            <form className="flex flex-col sm:flex-row gap-4 sm:gap-8"
+            <form className="flex flex-col md:flex-row gap-4 md:gap-8"
                 onSubmit={form.handleSubmit(submitForm)}>
-                <p>{JSON.stringify(form.getValues())}</p>
+                <FormProvider {...form}>
+
+                    <div className="flex flex-col gap-4 w-full max-w-xs">
+                        <InputWithLabel fieldTitle="First name" nameInSchema="firstName" />
+                        <InputWithLabel fieldTitle="Last name" nameInSchema="lastName" />
+
+                        <InputWithLabel fieldTitle="Address 1" nameInSchema="address1" />
+                        <InputWithLabel fieldTitle="Address 2" nameInSchema="address2" />
+
+                        <InputWithLabel fieldTitle="City" nameInSchema="city" />
+                        <SelectWithLabel fieldTitle="State" nameInSchema="state" data={StateArray} />
+
+                    </div>
+                    <div className="flex flex-col gap-4 w-full max-w-xs">
+                        <InputWithLabel fieldTitle="Zip Code" nameInSchema="zipCode" />
+                        <InputWithLabel fieldTitle="Phone" nameInSchema="phone" />
+
+                        <InputWithLabel fieldTitle="Email" nameInSchema="email" />
+
+                        <TextareaWithLabel className="h-40" fieldTitle="Notes" nameInSchema="notes" />
+
+                        <div className="flex gap-2">
+                            <Button type="submit" variant={"default"} title="save" className={'w-3/4'}>Submit</Button>
+                            <Button type="button" variant={"destructive"} title="save"
+                                onClick={() => form.reset(defaultValues)}>Reset</Button>
+
+                        </div>
+
+                    </div>
+                </FormProvider>
+
+                {/* <p>{JSON.stringify(form.getValues())}</p> */}
             </form>
 
         </div>
