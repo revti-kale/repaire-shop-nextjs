@@ -7,13 +7,22 @@ import { TextareaWithLabel } from "@/components/input/TextareaWithLabels";
 import { Button } from "@/components/ui/button";
 import { FormProvider, useForm } from "react-hook-form";
 import { CheckboxWithLabel } from "@/components/input/CheckboxWithLabel";
+import { SelectWithLabel } from "@/components/input/SelectWithLabel";
 
 type props = {
     ticket?: selectTicketSchemaType,
-    customer: selectCustomerSchemaType
+    customer: selectCustomerSchemaType,
+    isEditable?: boolean,
+    techs?: {
+        id: string,
+        description: string
+    }[]
 }
 
-export default function TicketForm({ ticket, customer }: props) {
+export default function TicketForm({ ticket, customer, isEditable = true, techs }: props) {
+
+    const isManager = Array.isArray(techs)
+
     const defaultValues: insertTicketSchemaType = {
         id: ticket?.id ?? 0,
         customerId: ticket?.customerId ?? 0,
@@ -44,10 +53,19 @@ export default function TicketForm({ ticket, customer }: props) {
                 <form className="flex flex-col md:flex-row gap-4 md:gap-8"
                     onSubmit={form.handleSubmit(submitForm)}>
                     <div className="flex flex-col gap-4 w-full max-w-xs">
-                        <InputWithLabel fieldTitle="Title" nameInSchema="title" />
-                        <InputWithLabel fieldTitle="Tech" nameInSchema="tech" disabled={true} />
+                        <InputWithLabel fieldTitle="Title" nameInSchema="title" disabled={!isEditable} />
 
-                        <CheckboxWithLabel message="Yes" fieldTitle="Completed" nameInSchema="completed" />
+                        {isManager ? (
+                            <SelectWithLabel fieldTitle="Tech ID" nameInSchema="tech"
+                                data={[{ id: "new-ticket@example.com", description: "new-ticket@example.com" }, ...techs]}
+                            />
+                        ) : (
+                            <InputWithLabel fieldTitle="Tech" nameInSchema="tech" disabled={true} />
+                        )
+                        }
+                        {ticket?.id ? (
+                            <CheckboxWithLabel message="Yes" fieldTitle="Completed" nameInSchema="completed" disabled={!isEditable} />
+                        ) : null}
 
                         <div className="mt-4 space-y-2">
                             <h3 className="text-lg">Customer Info</h3>
@@ -63,13 +81,18 @@ export default function TicketForm({ ticket, customer }: props) {
                     </div>
 
                     <div className="flex flex-col gap-4 w-full max-w-xs">
-                        <TextareaWithLabel className="h-90" fieldTitle="Description" nameInSchema="description" />
-                        <div className="flex gap-2">
-                            <Button type="submit" variant={"default"} title="save" className={'w-3/4'}>Save</Button>
-                            <Button type="button" variant={"destructive"} title="save"
-                                onClick={() => form.reset(defaultValues)}>Reset</Button>
+                        <TextareaWithLabel className="h-90" fieldTitle="Description" disabled={!isEditable}
+                            nameInSchema="description" />
+                        {isEditable ? (
+                            <div className="flex gap-2">
 
-                        </div>
+                                <Button type="submit" variant={"default"} title="save" className={'w-3/4'}>Save</Button>
+                                <Button type="button" variant={"destructive"} title="save"
+                                    onClick={() => form.reset(defaultValues)}>Reset</Button>
+                            </div>
+
+                        ) : null}
+
 
                     </div>
 

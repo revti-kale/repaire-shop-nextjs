@@ -6,13 +6,15 @@ import { useController, useFormContext } from "react-hook-form";
 type Props = {
     fieldTitle: string;
     nameInSchema: string;
-    message: string
+    message: string;
+    disabled?: boolean
 };
 
 export function CheckboxWithLabel({
     fieldTitle,
     nameInSchema,
-    message
+    message,
+    disabled = false
 }: Props) {
     const { control } = useFormContext();
 
@@ -39,6 +41,7 @@ export function CheckboxWithLabel({
                     onCheckedChange={field.onChange}
                     onBlur={field.onBlur}
                     name={field.name}
+                    disabled={disabled}
                     ref={field.ref}
                     className="flex h-5 w-5 items-center justify-center rounded border border-gray-400"
                 >

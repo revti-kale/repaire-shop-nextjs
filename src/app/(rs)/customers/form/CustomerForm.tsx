@@ -7,12 +7,18 @@ import { Button } from "@/components/ui/button";
 import { TextareaWithLabel } from "@/components/input/TextareaWithLabels";
 import { SelectWithLabel } from "@/components/input/SelectWithLabel";
 import { StateArray } from "@/constants/StateArray";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { CheckboxWithLabel } from "@/components/input/CheckboxWithLabel";
 
 type props = {
     customer?: selectCustomerSchemaType
 }
 
 export default function CustomerForm({ customer }: props) {
+
+    const { getPermission, isLoading } = useKindeBrowserClient();
+    const isManager = !isLoading && getPermission('manager')?.isGranted
+
     const defaultValues: insertCustomerSchemaType = {
         id: customer?.id || 0,
         firstName: customer?.firstName || "",
@@ -25,6 +31,7 @@ export default function CustomerForm({ customer }: props) {
         phone: customer?.phone || "",
         email: customer?.email || "",
         notes: customer?.notes || "",
+        active: customer?.active || true
     }
 
     const form = useForm<insertCustomerSchemaType>({
@@ -66,6 +73,10 @@ export default function CustomerForm({ customer }: props) {
                         <InputWithLabel fieldTitle="Email" nameInSchema="email" />
 
                         <TextareaWithLabel className="h-40" fieldTitle="Notes" nameInSchema="notes" />
+                        {isLoading ? <p>Loading...</p> : isManager && customer?.id ? (
+                            <CheckboxWithLabel fieldTitle="Active" nameInSchema="active" message="Yes" />
+
+                        ) : null}
 
                         <div className="flex gap-2">
                             <Button type="submit" variant={"default"} title="save" className={'w-3/4'}>Save</Button>
